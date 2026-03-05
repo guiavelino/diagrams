@@ -1,9 +1,74 @@
-<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36" version="29.3.8">
-  <diagram name="Page-1" id="EAmMuntTfNee3qCuXCdD">
-    <mxGraphModel>
+<mxfile host="app.diagrams.net">
+  <diagram name="Audio Upload Flow">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1">
       <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="user" value="User" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="60" y="260" width="120" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="frontend" value="Frontend Application" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="260" width="180" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="backend" value="Backend API" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="440" y="260" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3temp" value="S3 Temporary Bucket" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="120" width="180" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="metadata" value="Database Upload Session Metadata" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="260" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="sqs" value="SQS Queue Audio Processing" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="640" y="400" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="worker" value="Worker Audio Processor" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="400" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="s3final" value="S3 Final CD Storage sm cds cdId file.mp3" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="900" y="120" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" edge="1" parent="1" source="user" target="frontend">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e2" edge="1" parent="1" source="frontend" target="backend">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e3" value="request presigned url" edge="1" parent="1" source="backend" target="s3temp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e4" value="upload audio file" edge="1" parent="1" source="frontend" target="s3temp">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e5" value="store metadata" edge="1" parent="1" source="backend" target="metadata">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e6" value="confirm upload" edge="1" parent="1" source="backend" target="sqs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e7" value="consume message" edge="1" parent="1" source="sqs" target="worker">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e8" value="move audio to final location" edge="1" parent="1" source="worker" target="s3final">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+
       </root>
     </mxGraphModel>
   </diagram>
