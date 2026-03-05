@@ -1,79 +1,107 @@
 <mxfile host="app.diagrams.net">
   <diagram name="aws-audio-upload-architecture">
-    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1">
+    <mxGraphModel dx="1420" dy="900" grid="1" gridSize="10" guides="1">
       <root>
+
         <mxCell id="0"/>
         <mxCell id="1" parent="0"/>
 
-        <mxCell id="user" value="User" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="20" y="260" width="120" height="60" as="geometry"/>
+        <!-- AWS CLOUD -->
+        <mxCell id="aws" value="AWS Cloud" style="rounded=1;strokeWidth=2;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="160" y="60" width="1200" height="620" as="geometry"/>
         </mxCell>
 
-        <mxCell id="frontend" value="Frontend App" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="180" y="260" width="160" height="60" as="geometry"/>
+        <!-- VPC -->
+        <mxCell id="vpc" value="VPC" style="rounded=1;strokeWidth=2;" vertex="1" parent="aws">
+          <mxGeometry x="40" y="40" width="1120" height="540" as="geometry"/>
         </mxCell>
 
-        <mxCell id="alb" value="Application Load Balancer" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="260" width="200" height="60" as="geometry"/>
+        <!-- PUBLIC SUBNET -->
+        <mxCell id="publicsubnet" value="Public Subnet" style="rounded=1;dashed=1;" vertex="1" parent="vpc">
+          <mxGeometry x="40" y="60" width="1040" height="120" as="geometry"/>
         </mxCell>
 
-        <mxCell id="ecsapi" value="ECS API Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="620" y="260" width="180" height="60" as="geometry"/>
+        <!-- PRIVATE APP SUBNET -->
+        <mxCell id="privatesubnetapp" value="Private Subnet - Application Tier" style="rounded=1;dashed=1;" vertex="1" parent="vpc">
+          <mxGeometry x="40" y="220" width="1040" height="140" as="geometry"/>
         </mxCell>
 
-        <mxCell id="s3temp" value="S3 Temp Bucket uploads temp" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="860" y="120" width="200" height="70" as="geometry"/>
+        <!-- PRIVATE WORKER SUBNET -->
+        <mxCell id="privatesubnetworker" value="Private Subnet - Worker Tier" style="rounded=1;dashed=1;" vertex="1" parent="vpc">
+          <mxGeometry x="40" y="400" width="1040" height="120" as="geometry"/>
         </mxCell>
 
-        <mxCell id="sqs" value="SQS Queue audio processing" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="860" y="260" width="200" height="70" as="geometry"/>
+        <!-- USER -->
+        <mxCell id="user" value="User / Browser" style="rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="300" width="120" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="worker" value="ECS Worker Service" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1100" y="260" width="200" height="70" as="geometry"/>
+        <!-- ALB -->
+        <mxCell id="alb" value="Application Load Balancer" style="rounded=1;" vertex="1" parent="publicsubnet">
+          <mxGeometry x="300" y="30" width="200" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="s3final" value="S3 Final Bucket cds cdId file.mp3" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1100" y="120" width="220" height="70" as="geometry"/>
+        <!-- ECS API -->
+        <mxCell id="ecsapi" value="ECS API Service" style="rounded=1;" vertex="1" parent="privatesubnetapp">
+          <mxGeometry x="280" y="40" width="200" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="rds" value="RDS Database metadata" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="1100" y="400" width="200" height="70" as="geometry"/>
+        <!-- SQS -->
+        <mxCell id="sqs" value="SQS Queue" style="rounded=1;" vertex="1" parent="privatesubnetapp">
+          <mxGeometry x="560" y="40" width="160" height="60" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e1" edge="1" parent="1" source="user" target="frontend">
+        <!-- WORKER -->
+        <mxCell id="worker" value="ECS Worker Service" style="rounded=1;" vertex="1" parent="privatesubnetworker">
+          <mxGeometry x="520" y="30" width="200" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- RDS -->
+        <mxCell id="rds" value="RDS Database" style="rounded=1;" vertex="1" parent="privatesubnetworker">
+          <mxGeometry x="800" y="30" width="160" height="60" as="geometry"/>
+        </mxCell>
+
+        <!-- S3 TEMP -->
+        <mxCell id="s3temp" value="S3 Temp Bucket" style="rounded=1;" vertex="1" parent="aws">
+          <mxGeometry x="1080" y="160" width="200" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- S3 FINAL -->
+        <mxCell id="s3final" value="S3 Final Bucket (CD Storage)" style="rounded=1;" vertex="1" parent="aws">
+          <mxGeometry x="1080" y="320" width="220" height="70" as="geometry"/>
+        </mxCell>
+
+        <!-- EDGES -->
+
+        <mxCell id="e1" edge="1" parent="1" source="user" target="alb">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e2" edge="1" parent="1" source="frontend" target="alb">
+        <mxCell id="e2" edge="1" parent="1" source="alb" target="ecsapi">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e3" edge="1" parent="1" source="alb" target="ecsapi">
+        <mxCell id="e3" value="generate presigned url" edge="1" parent="1" source="ecsapi" target="s3temp">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e4" value="generate presigned url" edge="1" parent="1" source="ecsapi" target="s3temp">
+        <mxCell id="e4" value="direct upload" edge="1" parent="1" source="user" target="s3temp">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e5" value="direct upload" edge="1" parent="1" source="frontend" target="s3temp">
+        <mxCell id="e5" value="confirm upload" edge="1" parent="1" source="ecsapi" target="sqs">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e6" value="confirm upload" edge="1" parent="1" source="ecsapi" target="sqs">
+        <mxCell id="e6" value="consume message" edge="1" parent="1" source="sqs" target="worker">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e7" value="consume job" edge="1" parent="1" source="sqs" target="worker">
+        <mxCell id="e7" value="move file to final storage" edge="1" parent="1" source="worker" target="s3final">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
-        <mxCell id="e8" value="move audio to final storage" edge="1" parent="1" source="worker" target="s3final">
-          <mxGeometry relative="1" as="geometry"/>
-        </mxCell>
-
-        <mxCell id="e9" value="update cd status" edge="1" parent="1" source="worker" target="rds">
+        <mxCell id="e8" value="update metadata" edge="1" parent="1" source="worker" target="rds">
           <mxGeometry relative="1" as="geometry"/>
         </mxCell>
 
